@@ -14,4 +14,5 @@ Apri la pagina GitHub Pages del repo, poi:
 Aprila una volta online finché in alto compare "pronto offline".
 
 ## Aggiornare
-Dopo ogni modifica a `index.html` alza il numero di versione di `CACHE` in `sw.js`.
+- `index.html` si aggiorna da solo: l'app scarica la nuova versione in background e la mostra dall'apertura successiva.
+- Se cambi icone, manifest o `sw.js`, alza `VERSION` in `sw.js`.

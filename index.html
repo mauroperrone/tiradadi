@@ -801,11 +801,16 @@ h2{font-family:var(--display);font-size:15px;letter-spacing:.08em;margin:0;color
   updatePoolUI();
 
   /* ---------- offline: service worker ---------- */
+  // "pronto offline" compare solo quando la pagina è davvero salvata nella cache del telefono.
+  const setOffline = (txt) => { $('sub').textContent = 'D&D 5e · ' + txt; };
   try {
-    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-      navigator.serviceWorker.register('sw.js').then(() => navigator.serviceWorker.ready).then(() => {
-        $('sub').textContent = 'D&D 5e · pronto offline';
-      }).catch(() => { /* resta solo online */ });
+    if ('serviceWorker' in navigator && 'caches' in window && /^https?:$/.test(location.protocol)) {
+      setOffline('salvataggio offline…');
+      navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
+        .then(() => navigator.serviceWorker.ready)
+        .then(() => caches.match(new URL('index.html', location.href).href))
+        .then((hit) => setOffline(hit ? 'pronto offline' : 'offline non pronto, riapri'))
+        .catch(() => setOffline('offline non disponibile'));
     }
   } catch (e) { /* ignore */ }
 })();
